@@ -1,0 +1,26 @@
+version: "3"
+services:
+  sub:
+    build:
+      context: .
+      dockerfile:  ./Dockerfile
+    container_name: sub
+    env_file:
+      - .env
+    ports:
+      - 50051:50051
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: python main.py
+  pub:
+    build:
+      context: .
+      dockerfile:  ./Dockerfile
+    container_name: pub
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: python client.py
