@@ -81,18 +81,20 @@ def serve():
     ctr.wire(modules=di_modules)
     app = App()
 
-    app.subscribe(pubsub_name="pubsub", topic="TOPIC_A")(topic.mytopic)
-    app.subscribe(pubsub_name="pubsub", topic="TOPIC_D", dead_letter_topic="TOPIC_D_DEAD")(
+    app.subscribe(pubsub_name="pubsub", topic="a_hoge")(topic.mytopic)
+    app.subscribe(pubsub_name="pubsub", topic="d_alive", dead_letter_topic="ddd")(
         fail_and_send_to_dead_topic
     )
-    app.subscribe(pubsub_name="pubsub", topic="TOPIC_D_DEAD")(mytopic_dead)
+    app.subscribe(pubsub_name="pubsub", topic="ddd")(mytopic_dead)
 
-    # for id in range(4, 7):
-    #     app._servicer._registered_topics.append(
-    #         appcallback_v1.TopicSubscription(pubsub_name="pubsub", topic=f"topic/{id}")
-    #     )
-    # app.subscribe(pubsub_name="pubsub", topic="topic/#", disable_topic_validation=True)(
-    #     mytopic_wildcard
-    # )
+    for id in range(4, 7):
+        app._servicer._registered_topics.append(
+            appcallback_v1.TopicSubscription(pubsub_name="pubsub", topic=f"fuga/{id}")
+        )
+    app.subscribe(pubsub_name="pubsub", topic="fuga/#", disable_topic_validation=True)(
+        mytopic_wildcard
+    )
 
-    app.run(50051)
+    app._server.add_insecure_port(f"[::]:{ctr.config.GRPC_PORT()}")
+    app._server.start()
+    # app.run(50051)

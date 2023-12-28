@@ -1,20 +1,9 @@
-# ------------------------------------------------------------
-# Copyright 2022 The Dapr Authors
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#     http://www.apache.org/licenses/LICENSE-2.0
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ------------------------------------------------------------
-
 import time
 
 from dapr.clients import DaprClient
 from pydantic import BaseSettings
+
+# import requests
 
 
 class Message(BaseSettings):
@@ -22,7 +11,7 @@ class Message(BaseSettings):
     message: str
 
 
-time.sleep(5)
+# time.sleep(7)
 
 with DaprClient() as d:
     id = 0
@@ -34,7 +23,7 @@ with DaprClient() as d:
         # Create a typed message with content type and body
         resp = d.publish_event(
             pubsub_name="pubsub",
-            topic_name="TOPIC_A",
+            topic_name="a_hoge",
             data=req_data.json(),
             data_content_type="application/json",
         )
@@ -54,7 +43,7 @@ with DaprClient() as d:
         req_data = Message(id=id, message="hello world")
         resp = d.publish_event(
             pubsub_name="pubsub",
-            topic_name=f"topic/{id}",
+            topic_name=f"fuga/{id}",
             data=req_data.json(),
             data_content_type="application/json",
         )
@@ -68,7 +57,7 @@ with DaprClient() as d:
     req_data.id = 7
     resp = d.publish_event(
         pubsub_name="pubsub",
-        topic_name="TOPIC_D",
+        topic_name="d_alive",
         data=req_data.json(),
         data_content_type="application/json",
         publish_metadata={"custommeta": "somevalue"},
@@ -76,3 +65,7 @@ with DaprClient() as d:
 
     # Print the request
     print(req_data, flush=True)
+
+# health check
+# resp = requests.get("http://localhost:8081/health")
+# print(resp.json(), flush=True)

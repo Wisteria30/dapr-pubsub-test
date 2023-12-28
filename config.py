@@ -11,6 +11,7 @@ class Config(BaseSettings):
 
     # app
     APP_NAME: str = "pubsub"
+    HTTP_PORT: int
     GRPC_PORT: int
     DEBUG: bool = Field(env="DEBUG", default=True)
     LOG_LEVEL: str
